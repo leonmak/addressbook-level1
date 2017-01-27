@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -134,9 +135,6 @@ public class AddressBook {
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
     
     private static final String COMMAND_SORT_WORD = "sort";
-    private static final String COMMAND_SORT_DESC = "List the persons in alphabetical order.";
-    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
-    
 
     private static final String DIVIDER = "===================================================";
 
@@ -373,6 +371,7 @@ public class AddressBook {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
+        System.out.println(commandType);
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
@@ -380,6 +379,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+        	return listAllPersonsInAddressBookAlphabetically();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -388,8 +389,6 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
-//        case COMMAND_SORT_WORD:
-//        	executeListAlphabeticalOrder();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -584,6 +583,20 @@ public class AddressBook {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * Displays all persons in the address book to the user; in alphabetical order.
+     */
+    private static String listAllPersonsInAddressBookAlphabetically() {
+    	ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+    	Collections.sort(toBeDisplayed, new Comparator<String[]>() {
+    		public int compare(String[] o1, String[] o2) {
+				return o1[0].compareTo(o2[0]);
+			}
+    	});
+        showToUser(toBeDisplayed);
+    	return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
     /**
