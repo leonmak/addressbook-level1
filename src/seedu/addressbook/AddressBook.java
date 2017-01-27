@@ -207,9 +207,23 @@ public class AddressBook {
      */
 
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+    	showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        
+    	if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -225,10 +239,6 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
 
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
@@ -247,28 +257,6 @@ public class AddressBook {
      */
     private static void echoUserCommand(String userCommand) {
         showToUser("[Command entered:" + userCommand + "]");
-    }
-
-    /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
     }
 
     /**
@@ -342,15 +330,6 @@ public class AddressBook {
         return filePath.getFileName().toString().lastIndexOf('.') > 0
                 && (!Files.exists(filePath) || Files.isRegularFile(filePath));
     }
-
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
-
 
     /*
      * ===========================================
